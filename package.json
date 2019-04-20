@@ -9,7 +9,9 @@
   "author": "Bhumesh Domala",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "express": "^4.16.4",
+    "mongoose": "^5.5.2",
     "pg": "^7.10.0",
     "prettier": "^1.17.0"
   }

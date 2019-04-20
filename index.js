@@ -1,28 +1,24 @@
 const express = require("express");
 const app = express();
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
 const port = 7000;
 const Pool = require("pg").Pool;
-
-const { postgresConnectionString } = require("./config");
+const { postgresConnectionString, mongoConnectionString } = require("./config");
 
 const pool = new Pool({
 	connectionString: postgresConnectionString
 });
 
-const getUsers = (request, response) => {
-	pool.query("SELECT * FROM users ORDER BY id ASC", (error, results) => {
-		if (error) {
-			throw error;
-		}
-		response.status(200).json(results.rows);
-	});
-};
+mongoose
+	.connect(mongoConnectionString, { useNewUrlParser: true })
+	.catch(err => console.log(err));
 
-app.get("/", (request, response) => {
-	response.json({ info: "Node.js, Express, and Postgres API" });
-});
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
-app.get("/users", getUsers);
+var routes = require("./routes");
+routes(app);
 
 app.listen(port, () => {
 	console.log(`App running on port ${port}.`);
