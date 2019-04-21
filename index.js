@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const port = process.env.PORT || 7000;
 const Pool = require("pg").Pool;
 const { postgresConnectionString, mongoConnectionString } = require("./config");
+const sequelize = require("sequelize");
 
 const pool = new Pool({
 	connectionString: postgresConnectionString
