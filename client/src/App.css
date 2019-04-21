@@ -123,3 +123,7 @@ input {
 		opacity: 0;
 	}
 }
+
+.container{
+	padding: 20px;
+}

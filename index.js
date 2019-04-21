@@ -21,4 +21,4 @@ app.use(bodyParser.json());
 var routes = require("./routes");
 routes(app);
 
-app.listen(port);
+app.listen(port, () => console.log("server stared.."));

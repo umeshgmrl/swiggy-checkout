@@ -12,12 +12,12 @@ const Loader = () => (
 
 class App extends Component {
 	state = {
-		username: "bhumesh",
-		cardName: "Bhumesh Domala",
-		cardDOB: "2019-04-12",
-		cardExpiryDate: "11/22",
+		username: "",
+		cardName: "",
+		dateOfBirth: "",
+		cardExpiryDate: "",
 		loading: false,
-		method: "mongodb"
+		paymentMethod: ""
 	};
 
 	clearPage = () => {
@@ -25,29 +25,43 @@ class App extends Component {
 			loading: false,
 			username: "",
 			cardName: "",
-			cardDOB: "",
+			dateOfBirth: "",
 			cardExpiryDate: ""
 		});
 	};
 
+	fetchDetails = () => {
+		fetch(`/api/details/${this.state.username}`)
+			.then(res => res.json())
+			.then(data => {
+				this.setState(data);
+			})
+			.catch(function(err) {
+				console.log("something went wrong");
+			});
+	};
+
 	postOrder = () => {
+		const postData = this.state;
+		delete postData.loading;
+		delete postData._id;
+		delete postData.__v;
 		let self = this;
-		fetch("http://localhost:7000/orders", {
+		fetch("/api/orders", {
 			method: "post",
 			headers: {
 				Accept: "application/json",
 				"Content-Type": "application/json"
 			},
-			body: JSON.stringify(this.state)
+			body: JSON.stringify(postData)
 		})
-			.then(function(response) {
-				return response.json();
-			})
+			.then(res => res.json())
 			.then(function(data) {
 				self.clearPage();
 				alert("Order placed!");
 			})
-			.catch(function() {
+			.catch(function(err) {
+				console.log(err);
 				self.clearPage();
 				console.log("something went wrong");
 			});
@@ -68,13 +82,13 @@ class App extends Component {
 	};
 
 	render() {
-		// const disabled = !(
-		// 	this.state.username &&
-		// 	this.state.cardName &&
-		// 	this.state.cardDOB &&
-		// 	this.state.cardExpiryDate
-		// );
-		const disabled = false;
+		const disabled = !(
+			this.state.username &&
+			this.state.cardName &&
+			this.state.dateOfBirth &&
+			this.state.cardExpiryDate
+		);
+		// const disabled = false;
 		if (this.state.loading) return <Loader />;
 		return (
 			<div className="container">
@@ -89,9 +103,9 @@ class App extends Component {
 								type="text"
 								value={this.state.username}
 								onChange={this.handleChange}
+								onBlur={this.fetchDetails}
 							/>
 						</div>
-						<p className="help is-success">This username is available</p>
 					</div>
 					<div className="field">
 						<label className="label">Name on card</label>
@@ -110,10 +124,10 @@ class App extends Component {
 						<div className="control">
 							<input
 								className="input"
-								name="cardDOB"
+								name="dateOfBirth"
 								type="date"
 								placeholder="Text input"
-								value={this.state.cardDOB}
+								value={this.state.dateOfBirth}
 								onChange={this.handleChange}
 							/>
 						</div>
@@ -132,32 +146,35 @@ class App extends Component {
 						</div>
 					</div>
 					<br />
-					<h2>Select payment method</h2>
+					<h2>Select payment Method</h2>
 					<br />
 					<div className="columns">
 						<div className="column box1">
 							<input
 								type="radio"
-								name="method"
+								name="paymentMethod"
 								value="mongodb"
 								onChange={this.handleChange}
+								checked={this.state.paymentMethod === "mongodb"}
 							/>
 							<span>MongoDB</span>
 						</div>
 						<div className="column box1">
 							<input
 								type="radio"
-								name="method"
+								name="paymentMethod"
 								value="postegresql"
 								onChange={this.handleChange}
+								checked={this.state.paymentMethod === "postegresql"}
 							/>
 							<span>PostegreSQL</span>
 						</div>
 						<div className="column box1">
 							<input
 								type="radio"
-								name="method"
+								name="paymentMethod"
 								value="mysql"
+								checked={this.state.paymentMethod === "mysql"}
 								onChange={this.handleChange}
 							/>
 							<span>MySQL</span>
@@ -174,6 +191,7 @@ class App extends Component {
 						</div>
 					</div>
 				</form>
+				<br />
 				<pre>{JSON.stringify(this.state, true, 2)}</pre>
 			</div>
 		);
