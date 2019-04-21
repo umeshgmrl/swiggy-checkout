@@ -1,4 +1,5 @@
 {
-  "version": 2,
-  "name": "Swiggy Checkout"
+	"name": "swiggy-checkout",
+	"version": 1,
+	"alias": "swiggy-checkout.now.sh"
 }

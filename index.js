@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const port = 7000;
+const port = process.env.PORT || 7000;
 const Pool = require("pg").Pool;
 const { postgresConnectionString, mongoConnectionString } = require("./config");
 
@@ -20,6 +20,4 @@ app.use(bodyParser.json());
 var routes = require("./routes");
 routes(app);
 
-app.listen(port, () => {
-	console.log(`App running on port ${port}.`);
-});
+app.listen(port);
